@@ -1,0 +1,128 @@
+[
+  {
+    "id": "profile",
+    "metadata": {
+      "category": "profile"
+    },
+    "document": "CATEGORY: PROFILE\n\nName:\nVenkata Jahnavi Gunnam\n\nProfessional Title:\nSoftware Engineer | AI/ML Enthusiast | Full Stack Developer\n\nProfessional Summary:\nVenkata Jahnavi Gunnam is a Software Engineer specializing in Web Development, Backend Engineering, Artificial Intelligence, and Machine Learning systems.\n\nCore Expertise:\n- Backend Development\n- Machine Learning\n- Federated Learning\n- Full Stack Web Development\n- SAP Ariba Development\n- AI Chatbot Development\n\nProfessional Interests:\n- Artificial Intelligence\n- Conversational AI\n- Automation Systems\n- Scalable Applications\n- Data-driven Solutions\n\nContact Information:\n- Email: venkatajahnavi@gmail.com\n- LinkedIn: linkedin.com/in/jahnavi\n- GitHub: github.com/gvjahna"
+  },
+  {
+    "id": "experience_accenture",
+    "metadata": {
+      "category": "experience"
+    },
+    "document": "CATEGORY: EXPERIENCE\n\nCompany:\nAccenture\n\nRole:\nApplication Developer\n\nEmployment Type:\nFull Time\n\nDuration:\nJuly 2024 - Present\n\nExperience Summary:\nVenkata Jahnavi Gunnam works as a full-time Application Developer at Accenture.\n\nResponsibilities:\n- Developed Python backend automation tools\n- Monitored SAP Ariba operations\n- Improved UI backup systems\n- Enhanced SAP Ariba Guided Buying UI\n- Collaborated with SAP MM and Ariba consultants\n\nSkills Applied:\n- Python\n- HTML\n- CSS\n- JavaScript\n- SAP Ariba\n\nAchievements:\n- Reduced manual effort by 80%\n- Improved workflow reliability\n- Enhanced UI performance\n\nDomain:\nBackend Development\nEnterprise Application Development\nSAP Solutions"
+  },
+  {
+    "id": "experience_narl",
+    "metadata": {
+      "category": "experience"
+    },
+    "document": "CATEGORY: EXPERIENCE\n\nOrganization:\nNational Atmospheric Research Laboratory\n\nRole:\nAI/ML Intern\n\nDuration:\nNovember 2023 - April 2024\n\nInternship Summary:\nWorked on Federated Learning and distributed Machine Learning systems.\n\nResponsibilities:\n- Built decentralized Federated Learning systems\n- Developed crop disease prediction models\n- Designed AI-powered web interfaces\n- Built distributed Machine Learning pipelines\n\nSkills Applied:\n- Python\n- TensorFlow\n- Flower\n- Hugging Face\n\nDomain:\nMachine Learning\nFederated Learning\nArtificial Intelligence\n\nSpecialization:\nPrivacy-preserving AI systems and distributed ML architectures."
+  },
+  {
+    "id": "education_btech",
+    "metadata": {
+      "category": "education"
+    },
+    "document": "CATEGORY: EDUCATION\n\nQualification:\nBachelor of Technology in Computer Science and Engineering\n\nDegree:\nB.Tech CSE\n\nInstitution:\nSri Padmavati Mahila Visvavidyalayam\n\nDuration:\n2020 - 2024\n\nLocation:\nTirupati, India\n\nAcademic Score:\n88%\n\nEducation Type:\nUndergraduate Degree\n\nAcademic Background:\nComputer Science Engineering\nSoftware Development\nMachine Learning Fundamentals"
+  },
+  {
+    "id": "education_intermediate",
+    "metadata": {
+      "category": "education"
+    },
+    "document": "CATEGORY: EDUCATION\n\nQualification:\nIntermediate Education (MPC)\n\nInstitution:\nSri Nethaji Junior College\n\nDuration:\n2018 - 2020\n\nSubjects:\nMathematics\nPhysics\nChemistry\n\nAcademic Score:\n97.8%\n\nLocation:\nVinjamur, India"
+  },
+  {
+    "id": "education_school",
+    "metadata": {
+      "category": "education"
+    },
+    "document": "CATEGORY: EDUCATION\n\nQualification:\nSecondary School Education\n\nInstitution:\nNethaji Vikas Vidya Vihar\n\nDuration:\n2017 - 2018\n\nAcademic Score:\n10 CGPA\n\nLocation:\nVinjamur, India"
+  },
+  {
+    "id": "skills",
+    "metadata": {
+      "category": "skills"
+    },
+    "document": "CATEGORY: SKILLS\n\nProgramming Languages:\n- Python\n- Java\n\nAI and Machine Learning:\n- TensorFlow\n- Scikit-learn\n- Flower\n- Hugging Face\n\nBackend Development:\n- FastAPI\n- Flask\n\nFrontend Development:\n- HTML\n- CSS\n- JavaScript\n- React\n\nDatabases:\n- MySQL\n- ChromaDB\n\nAI Technologies:\n- RAG Applications\n- Vector Databases\n- Semantic Search\n- Prompt Engineering\n\nEnterprise Tools:\n- SAP Ariba\n\nCore Areas:\n- Backend Development\n- Full Stack Development\n- Machine Learning\n- Federated Learning\n- AI Chatbot Development"
+  },
+  {
+    "id": "achievement_skills_star",
+    "metadata": {
+      "category": "achievements"
+    },
+    "document": "CATEGORY: ACHIEVEMENTS\n\nAchievement Name:\nSkills Star Award\n\nOrganization:\nAccenture\n\nAchievement Summary:\nRecognized for applying diverse technical skills to improve UI performance and automation efficiency.\n\nKey Contributions:\n- Improved enterprise workflow systems\n- Enhanced automation reliability\n- Optimized UI functionality"
+  },
+  {
+    "id": "achievement_virinchi",
+    "metadata": {
+      "category": "achievements"
+    },
+    "document": "CATEGORY: ACHIEVEMENTS\n\nAchievement Name:\nVirinchi Tech Fiesta Organizer\n\nRole:\nOrganizer and Committee In-Charge\n\nEvent:\nNational Level Technical Fest 'Virinchi'\n\nAchievement Summary:\nOrganized and managed a national-level technical event and coordinated technical activities and event operations."
+  },
+  {
+    "id": "project_crop_disease",
+    "metadata": {
+      "category": "projects"
+    },
+    "document": "CATEGORY: PROJECTS\n\nProject Name:\nFederated Learning Model for Crop Disease Detection\n\nProject Type:\nMachine Learning Project\n\nDomain:\nArtificial Intelligence\nFederated Learning\nAgriculture Technology\n\nProject Description:\nDeveloped a privacy-preserving crop disease detection system using Federated Learning without centralizing user data.\n\nSkills Used:\n- Python\n- TensorFlow\n- Flower\n- HTML\n- CSS\n- JavaScript\n\nFeatures:\n- Distributed Machine Learning\n- Privacy-preserving AI\n- Web Interface for Farmers\n- Decentralized Training Pipeline\n\nAchievements:\n- Achieved 95% model accuracy\n- Reduced centralized data dependency\n- Improved accessibility for end users"
+  },
+  {
+    "id": "project_user_mania",
+    "metadata": {
+      "category": "projects"
+    },
+    "document": "CATEGORY: PROJECTS\n\nProject Name:\nUser Mania\n\nProject Type:\nFull Stack Web Application\n\nDomain:\nWeb Development\nCommunication Platform\n\nProject Description:\nDeveloped a knowledge-sharing and communication platform with real-time interaction between readers and content creators.\n\nSkills Used:\n- Python Flask\n- HTML\n- CSS\n- JavaScript\n\nFeatures:\n- User Authentication\n- Real-time Communication\n- Interactive Web Interface\n- Backend APIs\n- Database Communication\n\nPurpose:\nImproved communication capabilities missing in traditional blog platforms."
+  },
+  {
+    "id": "project_know_janu",
+    "metadata": {
+      "category": "projects"
+    },
+    "document": "CATEGORY: PROJECTS\n\nProject Name:\nKnow Janu AI Chatbot\n\nProject Type:\nAI Chatbot and RAG Application\n\nDomain:\nArtificial Intelligence\nConversational AI\nRetrieval-Augmented Generation\n\nProject Description:\nDeveloped a personal AI chatbot capable of answering questions about Venkata Jahnavi Gunnam using Retrieval-Augmented Generation (RAG).\n\nThe chatbot retrieves information from structured personal documents using semantic search and generates contextual responses using local Large Language Models.\n\nSkills Used:\n- Python\n- FastAPI\n- ChromaDB\n- Ollama\n- Phi-3\n- Sentence Transformers\n- React\n- HTML\n- CSS\n- JavaScript\n\nFeatures:\n- Semantic Search\n- Vector Embeddings\n- Metadata-based Retrieval\n- Local LLM Integration\n- Context-aware AI Responses\n- Real-time Conversational Interface\n\nCore Concepts:\n- RAG Architecture\n- Prompt Engineering\n- Vector Databases\n- Semantic Retrieval\n- AI Backend Development\n\nPurpose:\nBuilt an AI-powered portfolio assistant capable of answering questions related to skills, projects, education, experience, and achievements."
+  },
+  {
+    "id": "skill_usage_python",
+    "metadata": {
+      "category": "skill_usage"
+    },
+    "document": "CATEGORY: SKILL_USAGE\n\nSkill:\nPython\n\nUsed In:\n- Accenture backend automation tools\n- Federated Learning crop disease project\n- User Mania web application\n- Know Janu AI Chatbot\n\nPurpose:\nBackend Development\nMachine Learning\nAutomation\nAPI Development\nAI Applications"
+  },
+  {
+    "id": "skill_usage_tensorflow",
+    "metadata": {
+      "category": "skill_usage"
+    },
+    "document": "CATEGORY: SKILL_USAGE\n\nSkill:\nTensorFlow\n\nUsed In:\n- Federated Learning crop disease detection project\n\nPurpose:\nMachine Learning model training\nDistributed AI systems\nDeep Learning workflows"
+  },
+  {
+    "id": "skill_usage_frontend",
+    "metadata": {
+      "category": "skill_usage"
+    },
+    "document": "CATEGORY: SKILL_USAGE\n\nSkill:\nHTML CSS JavaScript\n\nUsed In:\n- SAP Ariba Guided Buying UI enhancement\n- Federated Learning web interface\n- User Mania frontend\n- Know Janu AI Chatbot frontend\n\nPurpose:\nFrontend Development\nInteractive UI Design\nWeb Application Interfaces"
+  },
+  {
+    "id": "skill_usage_fastapi",
+    "metadata": {
+      "category": "skill_usage"
+    },
+    "document": "CATEGORY: SKILL_USAGE\n\nSkill:\nFastAPI\n\nUsed In:\n- Know Janu AI Chatbot\n\nPurpose:\nBackend API Development\nAI Service Integration\nREST API creation"
+  },
+  {
+    "id": "skill_usage_chromadb",
+    "metadata": {
+      "category": "skill_usage"
+    },
+    "document": "CATEGORY: SKILL_USAGE\n\nSkill:\nChromaDB and Semantic Search\n\nUsed In:\n- Know Janu AI Chatbot\n\nPurpose:\nVector Database Management\nSemantic Retrieval\nContext-aware AI Search"
+  },
+  {
+    "id": "skill_usage_rag_ai",
+    "metadata": {
+      "category": "skill_usage"
+    },
+    "document": "CATEGORY: SKILL_USAGE\n\nSkill:\nRAG and AI Engineering\n\nUsed In:\n- Know Janu AI Chatbot\n\nTechnologies:\n- ChromaDB\n- Ollama\n- Phi-3\n- Sentence Transformers\n\nPurpose:\nBuilt a Retrieval-Augmented Generation chatbot capable of semantic search, context retrieval, and AI-generated responses."
+  }
+]
