@@ -19,7 +19,6 @@ def rerank(query):
         key=lambda x: x[1],
         reverse=True
     )
-    print(ranked)
     context = "\n\n".join([
         doc.strip()
         for doc, score in ranked[:2]
