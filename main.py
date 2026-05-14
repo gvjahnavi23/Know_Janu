@@ -1,23 +1,16 @@
-from app import know_janu
+from pipeline import HybridRAGPipeline
 
+pipeline = HybridRAGPipeline()
 
-def main():
+while True:
 
-    print("Know Janu Chatbot Started")
-    print("Type 'exit' to stop\n")
+    query = input("Ask Janu: ")
 
-    while True:
+    if query.lower() == "exit":
+        break
 
-        query = input("You: ")
+    response = pipeline.ask(query)
 
-        if query.lower() == "exit":
-            print("Goodbye!")
-            break
-
-        response = know_janu(query)
-
-        print(f"\nBot: {response}\n")
-
-
-if __name__ == "__main__":
-    main()
+    print("Know Janu's response:\n")
+    for r in response:
+        print(r, end="", flush=True)

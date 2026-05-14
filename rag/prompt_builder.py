@@ -1,9 +1,5 @@
-from rag.reranker import rerank
 
-
-def prompt_builder(query):
-
-    context = rerank(query)
+def prompt_builder(query, context):
 
     prompt = f"""
         You are Know Janu, an AI assistant for Venkata Jahnavi Gunnam.

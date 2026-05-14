@@ -1,26 +1,39 @@
 from sentence_transformers import CrossEncoder
 
-from rag.retriever import retriever
-
-reranker = CrossEncoder(
-    "cross-encoder/ms-marco-MiniLM-L-6-v2"
+from utils.config import (
+    RERANKER_MODEL,
+    TOP_K_RERANK
 )
 
-def rerank(query):
-    contexts = retriever(query)
-    pairs = [
-        (query, context)
-        for context in contexts
-    ]
-    scores = reranker.predict(pairs)
 
-    ranked = sorted(
-        zip(contexts, scores),
-        key=lambda x: x[1],
-        reverse=True
-    )
-    context = "\n\n".join([
-        doc.strip()
-        for doc, score in ranked[:2]
-    ])
-    return context
+class Reranker:
+
+    def __init__(self):
+
+        self.model = CrossEncoder(
+            RERANKER_MODEL
+        )
+
+    def rerank(
+        self,
+        query,
+        documents,
+        top_k=TOP_K_RERANK
+    ):
+
+        pairs = [
+            (query, doc)
+            for doc in documents
+        ]
+
+        scores = (
+            self.model.predict(pairs)
+        )
+
+        ranked = sorted(
+            zip(documents, scores),
+            key=lambda x: x[1],
+            reverse=True
+        )
+
+        return ranked[:top_k]

@@ -1,13 +1,12 @@
 import ollama
 
-from rag.prompt_builder import prompt_builder
 
-
-def generator(query):
-    prompt = prompt_builder(query)
+def generator(prompt):
     response = ollama.generate(
         model="phi3:mini",
-        prompt=prompt
+        prompt=prompt,
+        stream=True
     )
 
-    return response["response"]
+    for chunk in response:
+        yield chunk["response"]

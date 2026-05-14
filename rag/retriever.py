@@ -1,74 +1,51 @@
 from db.vector_database import send_collection
 from rag.embedder import embedder
-from utils.helper import category_map
-
-collection = send_collection()
-
-def detect_categories(query):
-    CATEGORY_MAP = category_map()
-    query = query.lower()
-
-    scores = {}
-
-    for category, keywords in CATEGORY_MAP.items():
-
-        score = 0
-
-        for keyword in keywords:
-
-            if keyword in query:
-                score += 1
-
-        scores[category] = score
-
-    sorted_categories = sorted(
-        scores.items(),
-        key=lambda x: x[1],
-        reverse=True
-    )
-
-    selected_categories = [
-        category
-        for category, score in sorted_categories
-        if score > 0
-    ]
-
-    return selected_categories
+from utils.config import TOP_K_DENSE
 
 
-def category_filter(query):
-    categories = detect_categories(query)
-    query_embedding = embedder.encode(
-        query
-    ).tolist()
+class DenseRetriever:
 
-    where_filter = {"category": "profile"}
+    def __init__(self):
 
-    if categories:
+        self.collection = send_collection()
 
-        if len(categories) == 1:
+    def retrieve(
+        self,
+        query,
+        where_filter=None,
+        top_k=TOP_K_DENSE
+    ):
 
-            where_filter = {
-                "category": categories[0]
-            }
+        query_embedding = (
+            embedder.encode(query)
+            .tolist()
+        )
 
-        else:
+        results = self.collection.query(
+            query_embeddings=[query_embedding],
+            n_results=top_k,
+            where=where_filter
+        )
 
-            where_filter = {
-                "$or": [
-                    {"category": category}
-                    for category in categories
-                ]
-            }
-        
+        documents = (
+            results["documents"][0]
+        )
 
-    return [where_filter, query_embedding]
+        distances = (
+            results["distances"][0]
+        )
 
+        retrieved = []
 
-def retriever( query: str):
-    where_filter, query_embedding = category_filter(query)
-    result = collection.query([query_embedding],
-                              where=where_filter,
-                              n_results=4)
+        for doc, score in zip(
+            documents,
+            distances
+        ):
 
-    return result["documents"][0]
+            retrieved.append({
+                "document": doc,
+                "score": float(score),
+                "source": "dense"
+            })
+
+        return retrieved
