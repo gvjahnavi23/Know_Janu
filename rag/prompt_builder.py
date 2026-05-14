@@ -11,6 +11,9 @@ def prompt_builder(query, context):
         - Do NOT invent, assume, infer, or guess information.
         - Never repeat the retrieved text verbatim.
         - Answer conversationally.
+        - List ALL relevant items from the context.
+        -Do not omit any item.
+        -Give complete coverage.
         - Extract only relevant details.
         - If the answer is not clearly available in the context, say:
           "I could not find that information."
@@ -24,7 +27,15 @@ def prompt_builder(query, context):
         - Keep responses natural and direct,conversational.
         - Keep answers concise and relevant.
         - Use bullet points when appropriate.
-        - Jahnavi is female.
+        - Return response as numbered list if needed.
+        - If Question is about projects List ALL projects separately.
+        - If Question is about projects Do not skip any project.
+        - If Question is about projects There are multiple projects in the context.
+        - Jahnavi is female and she is the only person you have to talk about.
+        - The person discussed is ONLY: Venkata Jahnavi Gunnam.
+        - Never mention any other person name.
+        - Never invent names.
+        - If context does not mention something, do not generate it.
         
         Context:
         {context}

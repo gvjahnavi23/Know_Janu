@@ -59,4 +59,4 @@ def category_filter(query):
                 ]
             }
 
-    return [where_filter, query_embedding]
+    return where_filter

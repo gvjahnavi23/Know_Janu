@@ -61,7 +61,7 @@ class HybridRAGPipeline:
         top_k = TOP_K_RERANK
 
         if type_of_query == "broad":
-            top_k = 5
+            top_k = 9
 
         # -----------------------------
         # Category routing
@@ -102,6 +102,10 @@ class HybridRAGPipeline:
         bm25_results = (
             self.bm25.retrieve(query)
         )
+        print("\nBM25 RESULTS:\n")
+
+        for item in bm25_results:
+            print(item)
 
         # -----------------------------
         # Dense Retrieval
@@ -113,6 +117,10 @@ class HybridRAGPipeline:
                 where_filter
             )
         )
+        print("\nDENSE RESULTS:\n")
+
+        for item in dense_results:
+            print(item)
 
         # -----------------------------
         # Store conversation state
@@ -148,7 +156,10 @@ class HybridRAGPipeline:
         # -----------------------------
         # Preserve full retrieval objects
         # -----------------------------
+        print("\nFUSED RESULTS:\n")
 
+        for item in fused_results:
+            print(item)
         fused_documents = [
             item["document"]
             for item in fused_results
@@ -158,22 +169,30 @@ class HybridRAGPipeline:
         # Reranking
         # -----------------------------
 
-        reranked = (
-            self.reranker.rerank(
-                query,
-                fused_documents,
-                top_k=top_k
-            )
+        if type_of_query == "broad":
+            final_docs = fused_documents[:6]
+        else:
+            reranked = (
+                self.reranker.rerank(
+                    query,
+                    fused_documents,
+                    top_k=top_k
+                )
         )
 
         # -----------------------------
         # Final Context
         # -----------------------------
 
-        final_docs = [
-            doc
-            for doc, score in reranked
-        ]
+            final_docs = [
+                doc
+                for doc, score in reranked
+            ]
+
+        print("\nFINAL DOCS:\n")
+
+        for doc in final_docs:
+            print(doc[:100])
 
         return "\n\n".join(final_docs)
 

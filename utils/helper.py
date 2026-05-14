@@ -112,14 +112,14 @@ def follow_up():
             ]
 
 def query_type(query):
-    broad = ["what projects",
-    "list skills",
-    "what technologies",
+    broad = ["projects",
+    "skills",
+    "technologies",
     "tell me all",
-    "what experiences"]
+    "experiences"]
     if any(
             phrase in query.lower()
-            for phrase in follow_up()
+            for phrase in broad
     ):
         return "broad"
     return "specific"
