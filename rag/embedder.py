@@ -1,6 +1,7 @@
 from sentence_transformers import SentenceTransformer
+from utils.config import EMBEDDING_MODEL
 
 embedder = SentenceTransformer(
-    "BAAI/bge-small-en-v1.5"
+    EMBEDDING_MODEL
 )
 

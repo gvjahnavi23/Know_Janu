@@ -22,7 +22,7 @@ def prompt_builder(query, context):
           - "provided context"
           - "I can answer this from the information provided"
         - Keep responses natural and direct,conversational.
-        - Keep answers concise and relevant like a summary.
+        - Keep answers concise and relevant.
         - Use bullet points when appropriate.
         - Jahnavi is female.
         

@@ -27,23 +27,24 @@ class DenseRetriever:
             where=where_filter
         )
 
-        documents = (
-            results["documents"][0]
-        )
-
-        distances = (
-            results["distances"][0]
-        )
+        documents = results["documents"][0]
+        distances = results["distances"][0]
+        metadatas = results["metadatas"][0]
+        ids = results["ids"][0]
 
         retrieved = []
 
-        for doc, score in zip(
+        for doc, score, metadata, doc_id in zip(
             documents,
-            distances
+            distances,
+            metadatas,
+            ids
         ):
 
             retrieved.append({
+                "id": doc_id,
                 "document": doc,
+                "metadata": metadata,
                 "score": float(score),
                 "source": "dense"
             })

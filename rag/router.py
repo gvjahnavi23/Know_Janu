@@ -40,7 +40,7 @@ def category_filter(query):
         query
     ).tolist()
 
-    where_filter = {"category": "profile"}
+    where_filter = None
 
     if categories:
 

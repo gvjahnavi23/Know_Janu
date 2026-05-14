@@ -98,3 +98,28 @@ def category_map():
             "introduction"
         ]
     }
+
+
+def follow_up():
+    return [
+            "it",
+            "they",
+            "that",
+            "those",
+            "which one",
+            "this",
+            "these"
+            ]
+
+def query_type(query):
+    broad = ["what projects",
+    "list skills",
+    "what technologies",
+    "tell me all",
+    "what experiences"]
+    if any(
+            phrase in query.lower()
+            for phrase in follow_up()
+    ):
+        return "broad"
+    return "specific"
