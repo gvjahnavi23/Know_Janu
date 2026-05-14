@@ -37,6 +37,7 @@ class HybridRAGPipeline:
             "last_results": None,
             "chat_history": []
         }
+        self.type_of_query = None
 
     def retrieve_context(
         self,
@@ -56,7 +57,7 @@ class HybridRAGPipeline:
         # Dynamic retrieval size
         # -----------------------------
 
-        type_of_query = query_type(query)
+        self.type_of_query = query_type(query)
 
         top_k = TOP_K_RERANK
 
@@ -102,10 +103,7 @@ class HybridRAGPipeline:
         bm25_results = (
             self.bm25.retrieve(query)
         )
-        print("\nBM25 RESULTS:\n")
 
-        for item in bm25_results:
-            print(item)
 
         # -----------------------------
         # Dense Retrieval
@@ -117,10 +115,7 @@ class HybridRAGPipeline:
                 where_filter
             )
         )
-        print("\nDENSE RESULTS:\n")
 
-        for item in dense_results:
-            print(item)
 
         # -----------------------------
         # Store conversation state
@@ -156,10 +151,6 @@ class HybridRAGPipeline:
         # -----------------------------
         # Preserve full retrieval objects
         # -----------------------------
-        print("\nFUSED RESULTS:\n")
-
-        for item in fused_results:
-            print(item)
         fused_documents = [
             item["document"]
             for item in fused_results
@@ -169,7 +160,7 @@ class HybridRAGPipeline:
         # Reranking
         # -----------------------------
 
-        if type_of_query == "broad":
+        if self.type_of_query == "broad":
             final_docs = fused_documents[:6]
         else:
             reranked = (
@@ -189,10 +180,6 @@ class HybridRAGPipeline:
                 for doc, score in reranked
             ]
 
-        print("\nFINAL DOCS:\n")
-
-        for doc in final_docs:
-            print(doc[:100])
 
         return "\n\n".join(final_docs)
 
@@ -204,7 +191,8 @@ class HybridRAGPipeline:
 
         prompt = prompt_builder(
             query,
-            context
+            context,
+            self.type_of_query
         )
 
         response = generator(prompt)
