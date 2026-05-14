@@ -61,7 +61,7 @@ class HybridRAGPipeline:
 
         top_k = TOP_K_RERANK
 
-        if type_of_query == "broad":
+        if self.type_of_query == "broad":
             top_k = 9
 
         # -----------------------------
