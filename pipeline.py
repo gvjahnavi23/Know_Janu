@@ -1,16 +1,10 @@
-from utils.config import TOP_K_RERANK
-
-from utils.helper import (
-    load_data,
-    follow_up,
-    query_type
-)
-
+from utils.helper import load_data
 from rag.router import category_filter
+from rag.query_processor import QueryProcessor
 from rag.bm25_retriever import BM25Retriever
 from rag.retriever import DenseRetriever
 from rag.fusion import reciprocal_rank_fusion
-from rag.reranker import Reranker
+from rag.reranker import  Reranker
 from rag.prompt_builder import prompt_builder
 from rag.generator import generator
 
@@ -21,7 +15,7 @@ class HybridRAGPipeline:
 
         data = load_data()
 
-        self.documents = data["documents"]
+        self.documents = data
 
         self.bm25 = BM25Retriever(
             self.documents
@@ -31,116 +25,309 @@ class HybridRAGPipeline:
 
         self.reranker = Reranker()
 
+        self.query_processor = (
+            QueryProcessor(
+                self.documents
+            )
+        )
+
         self.state = {
-            "last_category": None,
-            "last_topic": None,
-            "last_results": None,
+
+            "active_entity": None,
+
+            "last_project": None,
+
+            "last_skill": None,
+
+            "last_organization": None,
+
+            "last_education": None,
+
+            "last_query": None,
+
             "chat_history": []
         }
-        self.type_of_query = None
+
+    def build_entity_filter(self):
+
+        where_filter = {}
+
+        active_entity = (
+            self.state["active_entity"]
+        )
+
+        if not active_entity:
+
+            return where_filter
+
+        entity_type = (
+            active_entity["type"]
+        )
+
+        entity_value = (
+            active_entity["value"]
+        )
+
+        if entity_type == "project":
+
+            where_filter[
+                "project"
+            ] = entity_value
+
+        elif entity_type == "organization":
+
+            where_filter[
+                "organization"
+            ] = entity_value
+
+        elif entity_type == "skill":
+
+            where_filter[
+                "skill"
+            ] = entity_value
+
+        elif entity_type == "education":
+
+            where_filter[
+                "institution"
+            ] = entity_value
+
+        return where_filter
+
+    def apply_entity_diversity(
+        self,
+        results
+    ):
+
+        unique_entities = set()
+
+        filtered_results = []
+
+        for item in results:
+
+            metadata = (
+                item["metadata"]
+            )
+
+            entity = (
+
+                metadata.get("project")
+
+                or metadata.get("skill")
+
+                or metadata.get(
+                    "organization"
+                )
+
+                or metadata.get(
+                    "institution"
+                )
+
+                or item.get("id")
+            )
+
+            if not entity:
+
+                entity = (
+                    item["document"][:50]
+                )
+
+            if entity not in unique_entities:
+
+                unique_entities.add(
+                    entity
+                )
+
+                filtered_results.append(
+                    item
+                )
+
+        return filtered_results
+
+    def map_reranked_results(
+        self,
+        reranked_docs,
+        fused_results
+    ):
+
+        reranked = []
+
+        for doc, score in reranked_docs:
+
+            for item in fused_results:
+
+                if (
+                    item["document"]
+                    == doc
+                ):
+
+                    updated = item.copy()
+
+                    updated[
+                        "rerank_score"
+                    ] = score
+
+                    reranked.append(
+                        updated
+                    )
+
+                    break
+
+        return reranked
 
     def retrieve_context(
         self,
         query
     ):
 
-        # -----------------------------
-        # Follow-up query detection
-        # -----------------------------
-
-        is_follow_up = any(
-            phrase in query.lower()
-            for phrase in follow_up()
+        processed_query = (
+            self.query_processor.process(
+                query,
+                self.state
+            )
         )
 
-        # -----------------------------
-        # Dynamic retrieval size
-        # -----------------------------
+        rewritten_query = (
+            processed_query[
+                "rewritten_query"
+            ]
+        )
 
-        self.type_of_query = query_type(query)
+        query_type = (
+            processed_query[
+                "query_type"
+            ]
+        )
 
-        top_k = TOP_K_RERANK
+        print(
+            "Query:",
+            rewritten_query
+        )
 
-        if self.type_of_query == "broad":
-            top_k = 9
+        if query_type == "broad":
 
-        # -----------------------------
-        # Category routing
-        # -----------------------------
+            self.state[
+                "active_entity"
+            ] = None
 
-        where_filter = category_filter(query)
+        where_filter = (
+            category_filter(
+                rewritten_query
+            )
+        )
 
-        # -----------------------------
-        # Reuse previous category
-        # for follow-up queries
-        # -----------------------------
+        entity_filter = {}
+
+        continuation_queries = [
+
+            "where",
+
+            "it",
+
+            "that",
+
+            "more",
+
+            "explain",
+
+            "used there",
+
+            "used in it",
+
+            "tell me more",
+
+            "about it"
+        ]
+
+        should_attach_entity = any(
+
+            word in rewritten_query.lower()
+
+            for word in continuation_queries
+        )
 
         if (
-            not where_filter
-            and is_follow_up
-            and self.state["last_category"]
+            query_type != "broad"
+            and should_attach_entity
         ):
 
-            where_filter = (
-                self.state["last_category"]
+            entity_filter = (
+                self.build_entity_filter()
             )
 
-        # -----------------------------
-        # Default fallback
-        # -----------------------------
+        if entity_filter:
 
-        if not where_filter:
+            if where_filter:
 
-            where_filter = {
-                "category": "profile"
-            }
+                combined_filters = []
 
+                for key, value in (
+                    where_filter.items()
+                ):
 
-        # -----------------------------
-        # BM25 Retrieval
-        # -----------------------------
+                    combined_filters.append({
 
-        bm25_results = (
-            self.bm25.retrieve(query)
+                        key: value
+                    })
+
+                for key, value in (
+                    entity_filter.items()
+                ):
+
+                    combined_filters.append({
+
+                        key: value
+                    })
+
+                where_filter = {
+
+                    "$and":
+                    combined_filters
+                }
+
+            else:
+
+                where_filter = (
+                    entity_filter
+                )
+
+        print(
+            "Where filter:",
+            where_filter
         )
 
+        dense_top_k = 6
+        bm25_top_k = 6
 
-        # -----------------------------
-        # Dense Retrieval
-        # -----------------------------
+        if query_type == "broad":
+
+            dense_top_k = 20
+            bm25_top_k = 20
+
+        bm25_results = (
+            self.bm25.retrieve(
+                rewritten_query,
+                where_filter=where_filter,
+                top_k=bm25_top_k
+            )
+        )
 
         dense_results = (
             self.dense.retrieve(
-                query,
-                where_filter
+                rewritten_query,
+                where_filter=where_filter,
+                top_k=dense_top_k
             )
         )
+        if query_type != "broad":
+            self.state = (
 
-
-        # -----------------------------
-        # Store conversation state
-        # -----------------------------
-
-        if dense_results:
-
-            top_result = dense_results[0]
-
-            self.state["last_category"] = (
-                where_filter
+                self.query_processor
+                .extract_entities(
+                    dense_results,
+                    self.state
+                )
             )
-
-            self.state["last_topic"] = (
-                top_result["id"]
-            )
-
-            self.state["last_results"] = (
-                dense_results
-            )
-
-        # -----------------------------
-        # Fusion
-        # -----------------------------
-
         fused_results = (
             reciprocal_rank_fusion(
                 bm25_results,
@@ -148,67 +335,134 @@ class HybridRAGPipeline:
             )
         )
 
-        # -----------------------------
-        # Preserve full retrieval objects
-        # -----------------------------
         fused_documents = [
+
             item["document"]
+
             for item in fused_results
         ]
 
-        # -----------------------------
-        # Reranking
-        # -----------------------------
+        if query_type == "broad":
 
-        if self.type_of_query == "broad":
-            final_docs = fused_documents[:6]
-        else:
             reranked = (
-                self.reranker.rerank(
-                    query,
-                    fused_documents,
-                    top_k=top_k
+                self.apply_entity_diversity(
+                    fused_results
                 )
-        )
+            )
 
-        # -----------------------------
-        # Final Context
-        # -----------------------------
+        else:
+
+            reranked_docs = (
+                self.reranker.rerank(
+                    rewritten_query,
+                    fused_documents
+                )
+            )
+
+            reranked = (
+                self.map_reranked_results(
+                    reranked_docs,
+                    fused_results
+                )
+            )
+
+            reranked = (
+                self.apply_entity_diversity(
+                    reranked
+                )
+            )
+
+        if query_type == "broad":
 
             final_docs = [
-                doc
-                for doc, score in reranked
+
+                item["document"]
+
+                for item in reranked[:6]
             ]
 
+        else:
 
-        return "\n\n".join(final_docs)
+            final_docs = [
 
-    def ask(self, query):
+                item["document"]
 
-        context = self.retrieve_context(
-            query
+                for item in reranked[:4]
+            ]
+
+        print(
+            "Final documents:",
+            final_docs
         )
 
-        prompt = prompt_builder(
-            query,
+        if query_type == "broad":
+
+            structured_context = []
+
+            for index, doc in enumerate(
+                final_docs,
+                start=1
+            ):
+
+                structured_context.append(
+
+                    f"""
+                        ITEM {index}
+                        
+                        DESCRIPTION:
+                        {doc}
+                        """
+                )
+
+            context = "\n".join(
+                structured_context
+            )
+
+        else:
+
+            context = "\n\n".join(
+                final_docs
+            )
+
+        self.state[
+            "last_query"
+        ] = rewritten_query
+
+        return (
             context,
-            self.type_of_query
+            query_type
         )
 
-        response = generator(prompt)
+    def ask(
+        self,
+        query
+    ):
 
-        # -----------------------------
-        # Store chat history
-        # -----------------------------
+        context, query_type = (
+            self.retrieve_context(
+                query
+            )
+        )
 
-        self.state["chat_history"].append({
-            "role": "user",
-            "content": query
-        })
+        prompt = (
+            prompt_builder(
+                query,
+                context,
+                query_type
+            )
+        )
 
-        self.state["chat_history"].append({
-            "role": "assistant",
-            "content": response
+        response = (
+            generator(prompt)
+        )
+
+        self.state[
+            "chat_history"
+        ].append({
+
+            "query": query,
+
+            "response": response
         })
 
         return response

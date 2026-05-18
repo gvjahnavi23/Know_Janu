@@ -6,41 +6,49 @@ def reciprocal_rank_fusion(
 
     scores = {}
 
-    all_results = [
-        bm25_results,
-        dense_results
-    ]
+    documents = {}
 
-    for result_list in all_results:
+    combined_results = (
+        bm25_results
+        + dense_results
+    )
 
-        for rank, item in enumerate(
-            result_list
-        ):
+    for rank, item in enumerate(
+        combined_results
+    ):
 
-            doc = item["document"]
+        doc_id = item["id"]
 
-            rrf_score = 1 / (
-                k + rank + 1
-            )
+        rrf_score = (
+            1 / (k + rank + 1)
+        )
 
-            if doc not in scores:
-                scores[doc] = 0
+        scores[doc_id] = (
 
-            scores[doc] += rrf_score
+            scores.get(doc_id, 0)
 
-    fused = []
+            + rrf_score
+        )
 
-    for doc, score in scores.items():
+        documents[doc_id] = item
 
-        fused.append({
-            "document": doc,
-            "score": score
-        })
+    reranked = sorted(
 
-    fused = sorted(
-        fused,
-        key=lambda x: x["score"],
+        scores.items(),
+
+        key=lambda x: x[1],
+
         reverse=True
     )
 
-    return fused
+    fused_results = []
+
+    for doc_id, score in reranked:
+
+        item = documents[doc_id]
+
+        item["score"] = score
+
+        fused_results.append(item)
+
+    return fused_results

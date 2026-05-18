@@ -26,6 +26,8 @@ class DenseRetriever:
             n_results=top_k,
             where=where_filter
         )
+        if not results["documents"]:
+            return []
 
         documents = results["documents"][0]
         distances = results["distances"][0]
@@ -45,7 +47,7 @@ class DenseRetriever:
                 "id": doc_id,
                 "document": doc,
                 "metadata": metadata,
-                "score": float(score),
+                "score": 1 - float(score),
                 "source": "dense"
             })
 

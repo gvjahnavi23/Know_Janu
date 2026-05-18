@@ -18,7 +18,7 @@ class Reranker:
         self,
         query,
         documents,
-        top_k
+        top_k = TOP_K_RERANK
     ):
         pairs = [
             (query, doc)

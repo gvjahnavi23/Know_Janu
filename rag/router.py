@@ -1,62 +1,132 @@
-from rag.embedder import embedder
-from utils.helper import category_map
+def category_filter(query):
 
-
-def detect_categories(query):
-    CATEGORY_MAP = category_map()
     query = query.lower()
 
-    scores = {}
+    if any(word in query for word in [
 
-    for category, keywords in CATEGORY_MAP.items():
+        "project",
+        "projects",
+        "built",
+        "developed",
+        "created"
 
-        score = 0
+    ]):
 
-        for keyword in keywords:
+        return {
+            "category": "projects"
+        }
 
-            if keyword in query:
-                score += 1
+    # broad skills query
 
-        scores[category] = score
+    if any(word in query for word in [
 
-    sorted_categories = sorted(
-        scores.items(),
-        key=lambda x: x[1],
-        reverse=True
-    )
+        "skills",
+        "skill set",
+        "expertise",
+        "technologies known",
+        "technical skills",
+        "what does jahnavi know",
+        "what are jahnavi skills"
 
-    selected_categories = [
-        category
-        for category, score in sorted_categories
-        if score > 0
-    ]
+    ]):
 
-    return selected_categories
+        return {
+            "category": "skills"
+        }
 
 
-def category_filter(query):
-    categories = detect_categories(query)
-    query_embedding = embedder.encode(
-        query
-    ).tolist()
 
-    where_filter = None
+    if any(word in query for word in [
 
-    if categories:
+        "used",
+        "implemented",
+        "where was",
+        "technology",
+        "technologies",
+        "framework",
+        "frameworks",
+        "built with",
+        "worked with",
+        "which project used",
+        "which one used"
 
-        if len(categories) == 1:
+    ]):
 
-            where_filter = {
-                "category": categories[0]
-            }
+        return {
+            "category": "skill_usage"
+        }
 
-        else:
 
-            where_filter = {
-                "$or": [
-                    {"category": category}
-                    for category in categories
-                ]
-            }
 
-    return where_filter
+    if any(word in query for word in [
+
+        "experience",
+        "worked",
+        "company",
+        "companies",
+        "job",
+        "role",
+        "accenture",
+        "internship"
+
+    ]):
+
+        return {
+            "category": "experience"
+        }
+
+
+
+    if any(word in query for word in [
+
+        "education",
+        "study",
+        "studied",
+        "college",
+        "btech",
+        "degree",
+        "school",
+        "university",
+        "graduation"
+
+    ]):
+
+        return {
+            "category": "education"
+        }
+
+
+    if any(word in query for word in [
+
+        "achievement",
+        "achievements",
+        "award",
+        "awards",
+        "certification",
+        "certifications",
+        "organizer",
+        "leadership"
+
+    ]):
+
+        return {
+            "category": "achievements"
+        }
+
+
+
+    if any(phrase in query for phrase in [
+
+        "who is jahnavi",
+        "summary about jahnavi",
+        "about jahnavi",
+        "jahnavi profile",
+        "profile summary",
+        "introduce jahnavi"
+
+    ]):
+        return {
+            "category": "profile"
+        }
+
+    return None
