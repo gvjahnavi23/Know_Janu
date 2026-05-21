@@ -90,16 +90,11 @@ def category_filter(query):
         "degree",
         "school",
         "university",
-        "graduation"
+        "graduation",
+        "qualification"
 
     ]):
-
-        return {
-            "$and": [
-                {"category": "projects"},
-                {"type": "overview"}
-            ]
-        }
+        return {"category": "education"}
 
 
     if any(word in query for word in [
@@ -150,11 +145,6 @@ def category_filter(query):
         "education",
         "qualification",
     ]):
-        return {
-            '$and':[
-                {"category": "education"},
-                {"type": "degree"}
-            ]
-        }
+        return {"category": "education"},
 
     return None

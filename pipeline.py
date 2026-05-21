@@ -28,7 +28,6 @@ class HybridRAGPipeline:
         }
 
     def build_entity_filter(self):
-        print("Building entity filter: ", self.state)
         where_filter = {}
         active_entity = self.state["active_entity"]
 
@@ -95,9 +94,6 @@ class HybridRAGPipeline:
 
         query_type = processed_query["query_type"]
 
-        print("Query:",rewritten_query)
-        print("Query Type:",query_type)
-
         where_filter = category_filter(rewritten_query)
 
         entity_filter = {}
@@ -121,7 +117,6 @@ class HybridRAGPipeline:
 
                 where_filter = entity_filter
 
-        print("Where filter:",where_filter)
         dense_top_k = 6
         bm25_top_k = 6
 
@@ -164,7 +159,6 @@ class HybridRAGPipeline:
             final_docs = [item["document"] for item in reranked[:4]]
             context = "\n\n".join(final_docs)
 
-        print("Final documents:",final_docs)
 
         self.state["last_query"] = rewritten_query
 

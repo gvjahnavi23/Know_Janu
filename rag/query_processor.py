@@ -46,8 +46,6 @@ class QueryProcessor:
             "full time": "full_time",
             "full-time": "full_time",
             "job": "full_time",
-            "accenture": "full_time",
-            "national atmospheric research laboratory": "internship",
             "internship": "internship",
             "intern": "internship",
             "narl": "internship"
@@ -64,6 +62,9 @@ class QueryProcessor:
             "school":"secondary school education",
             "10":"secondary school education",
             "10th" : "secondary school education",
+            "qualification": "education",
+            "qualifications": "education",
+            "degree": "education",
         }
 
 
@@ -194,9 +195,6 @@ class QueryProcessor:
             "explain",
             "implemented",
             "worked on",
-            "about user mania",
-            "about accenture",
-            "about tensorflow",
             "which project",
             "which skill",
             "which experience",
@@ -223,20 +221,6 @@ class QueryProcessor:
             state["active_entity"] = new_entity
             return query
 
-
-        broad_categories = [
-            "projects",
-            "skills",
-            "education",
-            "experience",
-            "achievements",
-            "profile"
-        ]
-
-        for category in broad_categories:
-
-            if category in query:
-                break
 
         if self.is_new_topic(query):
             state["active_entity"] = None
@@ -270,6 +254,12 @@ class QueryProcessor:
             state["active_entity"] = {
                 "type":"organization",
                 "value":metadata["organization"]
+            }
+
+        if "institution" in metadata:
+            state["active_entity"] = {
+                "type": "education",
+                "value": metadata["institution"]
             }
 
         return state
