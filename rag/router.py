@@ -4,6 +4,26 @@ def category_filter(query):
 
     if any(word in query for word in [
 
+        "used",
+        "implemented",
+        "where was",
+        "technology",
+        "technologies",
+        "framework",
+        "frameworks",
+        "built with",
+        "worked with",
+        "which project used",
+        "which one used"
+
+    ]):
+
+        return {
+            "category": "skill_usage"
+        }
+
+    if any(word in query for word in [
+
         "project",
         "projects",
         "built",
@@ -11,9 +31,11 @@ def category_filter(query):
         "created"
 
     ]):
-
         return {
-            "category": "projects"
+            "$and": [
+                {"category": "projects"},
+                {"type": "overview"}
+            ]
         }
 
     # broad skills query
@@ -38,28 +60,6 @@ def category_filter(query):
 
     if any(word in query for word in [
 
-        "used",
-        "implemented",
-        "where was",
-        "technology",
-        "technologies",
-        "framework",
-        "frameworks",
-        "built with",
-        "worked with",
-        "which project used",
-        "which one used"
-
-    ]):
-
-        return {
-            "category": "skill_usage"
-        }
-
-
-
-    if any(word in query for word in [
-
         "experience",
         "worked",
         "company",
@@ -72,7 +72,10 @@ def category_filter(query):
     ]):
 
         return {
-            "category": "experience"
+            "$and": [
+                {"category": "experience"},
+                {"type": "role"}
+            ]
         }
 
 
@@ -92,7 +95,10 @@ def category_filter(query):
     ]):
 
         return {
-            "category": "education"
+            "$and": [
+                {"category": "projects"},
+                {"type": "overview"}
+            ]
         }
 
 
@@ -110,8 +116,15 @@ def category_filter(query):
     ]):
 
         return {
-            "category": "achievements"
-        }
+                "$and":[ {"category":"achievements"},
+
+                    {"$or":[
+                            {"type":"award"},
+                            {"type":"leadership"}
+                        ]
+                    }
+                ]
+            }
 
 
 
@@ -122,11 +135,26 @@ def category_filter(query):
         "about jahnavi",
         "jahnavi profile",
         "profile summary",
-        "introduce jahnavi"
+        "introduce jahnavi",
+        "who is she"
 
     ]):
         return {
-            "category": "profile"
+            "$and":[
+                {"category": "profile"},
+                {"type": "summary"}
+            ]
+        }
+
+    if any(phrase in query for phrase in [
+        "education",
+        "qualification",
+    ]):
+        return {
+            '$and':[
+                {"category": "education"},
+                {"type": "degree"}
+            ]
         }
 
     return None

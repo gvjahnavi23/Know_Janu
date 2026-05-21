@@ -5,10 +5,9 @@ pipeline = HybridRAGPipeline()
 while True:
 
     query = input("Ask Know Janu: ").strip()
-    if query == "":
+
+    if query.lower() == "exit" or query == "":
         print("You didn't ask anything :( I am going to exit..")
-        break
-    if query.lower() == "exit":
         break
 
     response = pipeline.ask(query)

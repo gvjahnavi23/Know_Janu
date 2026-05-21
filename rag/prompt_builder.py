@@ -5,7 +5,6 @@ def prompt_builder(
 ):
 
     global prompt
-    extra_instruction = ""
 
     if query_type == "broad":
 

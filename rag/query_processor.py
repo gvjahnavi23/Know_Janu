@@ -1,18 +1,6 @@
-from utils.helper import (
-    follow_up
-)
-
-
 class QueryProcessor:
 
-    def __init__(
-        self,
-        documents
-    ):
-
-        self.follow_up_words = (
-            follow_up()
-        )
+    def __init__(self,documents):
 
         self.organizations = set()
 
@@ -20,327 +8,153 @@ class QueryProcessor:
 
         self.skills = set()
 
-        # --------------------------------
-        # Skill aliases / normalization
-        # --------------------------------
-
         self.skill_aliases = {
-
-            # --------------------------------
-            # AI / ML
-            # --------------------------------
-
-            "ai":
-            "Artificial Intelligence",
-
-            "ml":
-            "Machine Learning",
-
-            "machine learning":
-            "Machine Learning",
-
-            "artificial intelligence":
-            "Artificial Intelligence",
-
-            # --------------------------------
-            # RAG / Search
-            # --------------------------------
-
-            "rag":
-            "Retrieval-Augmented Generation",
-
-            "retrieval augmented generation":
-            "Retrieval-Augmented Generation",
-
-            "semantic search":
-            "Semantic Search",
-
-            "vector db":
-            "ChromaDB",
-
-            "vector database":
-            "ChromaDB",
-
-            # --------------------------------
-            # LLM
-            # --------------------------------
-
-            "llm":
-            "Phi-3",
-
-            "llms":
-            "Phi-3",
-
-            "local llm":
-            "Phi-3",
-
-            # --------------------------------
-            # Frameworks
-            # --------------------------------
-
-            "tensorflow":
-            "TensorFlow",
-
-            "flower":
-            "Flower",
-
-            "huggingface":
-            "Hugging Face",
-
-            "hugging face":
-            "Hugging Face",
-
-            # --------------------------------
-            # Backend
-            # --------------------------------
-
-            "fastapi":
-            "FastAPI",
-
-            "flask":
-            "Flask",
-
-            # --------------------------------
-            # Frontend
-            # --------------------------------
-
-            "react":
-            "React",
-
-            "html":
-            "HTML CSS JavaScript",
-
-            "css":
-            "HTML CSS JavaScript",
-
-            "javascript":
-            "HTML CSS JavaScript",
-
-            "js":
-            "HTML CSS JavaScript",
-
-            # --------------------------------
-            # Database
-            # --------------------------------
-
-            "chromadb":
-            "ChromaDB",
-
-            # --------------------------------
-            # Embeddings
-            # --------------------------------
-
-            "sentence transformers":
-            "Sentence Transformers",
-
-            # --------------------------------
-            # Local inference
-            # --------------------------------
-
-            "ollama":
-            "Ollama",
-
-            "phi3":
-            "Phi-3",
-
-            "phi-3":
-            "Phi-3",
-
-            # --------------------------------
-            # Programming
-            # --------------------------------
-
-            "python":
-            "Python"
+            "ai":"Artificial Intelligence",
+            "ml":"Machine Learning",
+            "machine learning": "Machine Learning",
+            "artificial intelligence":"Artificial Intelligence",
+            "rag": "Retrieval-Augmented Generation",
+            "retrieval augmented generation": "Retrieval-Augmented Generation",
+            "semantic search": "Semantic Search",
+            "vector db": "ChromaDB",
+            "vector database": "ChromaDB",
+             "llm":"Phi-3",
+            "llms":"Phi-3",
+            "local llm":"Phi-3",
+            "tensorflow":"TensorFlow",
+            "flower":"Flower",
+            "huggingface":"Hugging Face",
+            "hugging face":"Hugging Face",
+            "fastapi": "FastAPI",
+            "flask":"Flask",
+            "react":"React",
+            "html":"HTML CSS JavaScript",
+            "css":"HTML CSS JavaScript",
+            "javascript":"HTML CSS JavaScript",
+            "js":"HTML CSS JavaScript",
+            "chromadb":"ChromaDB",
+            "sentence transformers":"Sentence Transformers",
+            "ollama":"Ollama",
+            "phi3":"Phi-3",
+            "phi-3": "Phi-3",
+            "python":"Python",
+            "btech" : "Bachelor of Technology",
         }
+
+        self.organization_aliases = {
+
+            "full time": "full_time",
+            "full-time": "full_time",
+            "job": "full_time",
+            "accenture": "full_time",
+            "national atmospheric research laboratory": "internship",
+            "internship": "internship",
+            "intern": "internship",
+            "narl": "internship"
+        }
+
+        self.education_aliases = {
+
+            "btech":"bachelor of technology",
+            "b.tech":"bachelor of technology",
+            "inter":"intermediate education",
+            "intermediate":"intermediate education",
+            "12" : "intermediate education",
+            "12th" : "intermediate education",
+            "school":"secondary school education",
+            "10":"secondary school education",
+            "10th" : "secondary school education",
+        }
+
 
         for doc in documents:
 
-            metadata = (
-                doc["metadata"]
-            )
+            metadata = doc["metadata"]
+            if "organization"in metadata:
+                self.organizations.add(metadata[ "organization"].lower())
 
-            if (
-                "organization"
-                in metadata
-            ):
+            if "project"in metadata:
+                self.projects.add(metadata["project"].lower())
 
-                self.organizations.add(
+            if "skill" in metadata:
+                self.skills.add(metadata[ "skill"].lower())
 
-                    metadata[
-                        "organization"
-                    ].lower()
-                )
-
-            if (
-                "project"
-                in metadata
-            ):
-
-                self.projects.add(
-
-                    metadata[
-                        "project"
-                    ].lower()
-                )
-
-            if (
-                "skill"
-                in metadata
-            ):
-
-                self.skills.add(
-
-                    metadata[
-                        "skill"
-                    ].lower()
-                )
-
-    # --------------------------------
-    # Detect explicit entities
-    # --------------------------------
-
-    def detect_new_entity(
-        self,
-        query
-    ):
+    def detect_new_entity(self,query):
 
         query = query.lower()
 
-        # aliases first
+        for project in self.projects:
 
-        for alias, actual_skill in (
+            normalized_project = project.replace(" ", "")
+            normalized_query = query.replace(" ", "")
 
-            self.skill_aliases.items()
+            if project in query or normalized_project in normalized_query:
+                return {
+                    "type": "project",
+                    "value": project
+                }
+        normalized_query = f" {query} "
 
-        ):
+        for alias, actual_edu in self.education_aliases.items():
+            normalized_alias = f" {alias} "
+            if normalized_alias in normalized_query:
+                return {
+                    "type": "education",
+                    "value": actual_edu
+                }
 
-            if alias in query:
+        for alias, actual_experience in self.organization_aliases.items():
+            normalized_alias = f" {alias} "
+            if normalized_alias in normalized_query:
 
                 return {
-
-                    "type":
-                    "skill",
-
-                    "value":
-                    actual_skill
+                    "type":"employment_type",
+                    "value":actual_experience
                 }
 
         for org in self.organizations:
-
             if org in query:
 
                 return {
-
-                    "type":
-                    "organization",
-
-                    "value":
-                    org
+                    "type":"employment_type",
+                    "value":org
                 }
+        # aliases normalisaion
 
-        for project in self.projects:
-
-            if project in query:
+        for alias, actual_skill in self.skill_aliases.items():
+            normalized_alias = f" {alias} "
+            if normalized_alias in normalized_query:
 
                 return {
-
-                    "type":
-                    "project",
-
-                    "value":
-                    project
+                    "type": "skill",
+                    "value": actual_skill
                 }
 
         for skill in self.skills:
-
             if skill in query:
-
                 return {
-
-                    "type":
-                    "skill",
-
-                    "value":
-                    skill
+                    "type":"skill",
+                    "value":skill
                 }
 
         return None
 
-    # --------------------------------
-    # Check if query already
-    # contains a new entity
-    # --------------------------------
 
-    def contains_new_entity(
-        self,
-        query
-    ):
+    def is_new_topic(self, query):
 
         query = query.lower()
+        broad_patterns = [
+            "tell me about",
+            "list",
+            "show",
+            "what are",
+            "give",
+            "all",
+            "summary",
+            "introduce"
+        ]
 
-        for alias in (
-            self.skill_aliases
-        ):
-
-            if alias in query:
-
-                return True
-
-        for org in self.organizations:
-
-            if org in query:
-
-                return True
-
-        for project in self.projects:
-
-            if project in query:
-
-                return True
-
-        for skill in self.skills:
-
-            if skill in query:
-
-                return True
-
-        return False
-
-    # --------------------------------
-    # Follow-up detection
-    # --------------------------------
-
-    def is_follow_up(
-        self,
-        query
-    ):
-
-        query = query.lower()
-
-        for word in (
-            self.follow_up_words
-        ):
-
-            if word in query:
-
-                return True
-
-        return False
-
-    # --------------------------------
-    # Broad topic detection
-    # --------------------------------
-
-    def is_new_topic(
-        self,
-        query
-    ):
-
-        query = query.lower()
-
-        keywords = [
-
+        broad_categories = [
             "projects",
             "skills",
             "education",
@@ -348,217 +162,126 @@ class QueryProcessor:
             "achievements",
             "technologies",
             "qualification",
-            "btech",
             "college",
-            "summary",
-            "about me",
-            "about jahnavi",
-            "profile",
-            "who is jahnavi",
-            "introduce"
+            "profile"
         ]
 
-        for keyword in keywords:
+        if any(
+                pattern in query
+                for pattern in broad_patterns
+        ):
 
-            if keyword in query:
-
+            if any(
+                    category in query
+                    for category in broad_categories
+            ):
                 return True
 
         return False
 
-    # --------------------------------
-    # Query type classification
-    # --------------------------------
+    def detect_query_type(self, query):
 
-    def detect_query_type(
-        self,
-        query
-    ):
+        query = query.lower()
 
-        if (
-            self.is_new_topic(query)
-        ):
+        focused_patterns = [
+            "where",
+            "which",
+            "used",
+            "use",
+            "using",
+            "tell me more",
+            "more about",
+            "explain",
+            "implemented",
+            "worked on",
+            "about user mania",
+            "about accenture",
+            "about tensorflow",
+            "which project",
+            "which skill",
+            "which experience",
+            "full time",
+            "full-time",
+            "internship",
+            "intern"
+        ]
 
-            return "broad"
+        for pattern in focused_patterns:
 
-        return "focused"
+            if pattern in query:
+                return "focused"
 
-    # --------------------------------
-    # Conversational query rewriting
-    # --------------------------------
+        return "broad"
 
-    def rewrite_query(
-        self,
-        query,
-        state
-    ):
+    def rewrite_query(self, query, state):
 
-        new_entity = (
-            self.detect_new_entity(
-                query
-            )
-        )
+        query = query.lower()
 
-        # ----------------------------
-        # NEW ENTITY
-        # ----------------------------
+        new_entity = self.detect_new_entity(query)
 
         if new_entity:
-
-            state[
-                "active_entity"
-            ] = new_entity
-
+            state["active_entity"] = new_entity
             return query
 
-        # ----------------------------
-        # NEW TOPIC
-        # ----------------------------
 
-        if (
-            self.is_new_topic(query)
-        ):
+        broad_categories = [
+            "projects",
+            "skills",
+            "education",
+            "experience",
+            "achievements",
+            "profile"
+        ]
 
-            state[
-                "active_entity"
-            ] = None
+        for category in broad_categories:
 
+            if category in query:
+                break
+
+        if self.is_new_topic(query):
+            state["active_entity"] = None
             return query
-
-        # ----------------------------
-        # FOLLOW-UP
-        # ----------------------------
-
-        if (
-
-            self.is_follow_up(query)
-
-            and state[
-                "active_entity"
-            ]
-
-            and not self.contains_new_entity(
-                query
-            )
-        ):
-
-            entity = (
-
-                state[
-                    "active_entity"
-                ]["value"]
-            )
-
-            return (
-                f"{query} about "
-                f"{entity}"
-            )
 
         return query
 
-    # --------------------------------
-    # Extract entities from retrieval
-    # --------------------------------
-
-    def extract_entities(
-        self,
-        dense_results,
-        state
-    ):
+    def extract_entities(self, dense_results, state):
 
         if not dense_results:
-
             return state
 
-        metadata = (
-            dense_results[0]["metadata"]
-        )
+        if state.get("last_query_type") == "broad":
+            return state
+
+        metadata = dense_results[0]["metadata"]
 
         if "project" in metadata:
-
-            state[
-                "last_project"
-            ] = metadata["project"]
-
-            state[
-                "active_entity"
-            ] = {
-
-                "type":
-                "project",
-
-                "value":
-                metadata["project"]
+            state["active_entity"] = {
+                "type":"project",
+                "value":metadata["project"]
             }
 
         if "skill" in metadata:
-
-            state[
-                "last_skill"
-            ] = metadata["skill"]
-
-            state[
-                "active_entity"
-            ] = {
-
-                "type":
-                "skill",
-
-                "value":
-                metadata["skill"]
+            state["active_entity"] = {
+                "type":"skill",
+                "value": metadata["skill"]
             }
 
         if "organization" in metadata:
-
-            state[
-                "last_organization"
-            ] = metadata[
-                "organization"
-            ]
-
-            state[
-                "active_entity"
-            ] = {
-
-                "type":
-                "organization",
-
-                "value":
-                metadata[
-                    "organization"
-                ]
+            state["active_entity"] = {
+                "type":"organization",
+                "value":metadata["organization"]
             }
 
         return state
 
-    # --------------------------------
-    # Main processing
-    # --------------------------------
 
-    def process(
-        self,
-        query,
-        state
-    ):
+    def process(self, query, state):
 
-        rewritten_query = (
-            self.rewrite_query(
-                query,
-                state
-            )
-        )
+        rewritten_query = self.rewrite_query(query,state)
 
-        query_type = (
-            self.detect_query_type(
-                rewritten_query
-            )
-        )
-
+        query_type = self.detect_query_type(rewritten_query)
+        state["last_query_type"] = query_type
         return {
-
-            "query_type":
-            query_type,
-
-            "rewritten_query":
-            rewritten_query
+            "query_type":query_type,
+            "rewritten_query":rewritten_query
         }

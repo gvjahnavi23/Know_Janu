@@ -31,12 +31,3 @@ def follow_up():
         "these",
         "there"
     ]
-
-
-def clean_text(text):
-
-    return (
-        text
-        .replace("\n", " ")
-        .strip()
-    )

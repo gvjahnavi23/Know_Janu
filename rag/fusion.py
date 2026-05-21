@@ -13,9 +13,7 @@ def reciprocal_rank_fusion(
         + dense_results
     )
 
-    for rank, item in enumerate(
-        combined_results
-    ):
+    for rank, item in enumerate(combined_results):
 
         doc_id = item["id"]
 

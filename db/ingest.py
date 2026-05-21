@@ -6,14 +6,46 @@ collection = send_collection()
 
 data = load_data()
 
+documents = [
+    item["document"]
+    for item in data
+]
+
+ids = [
+    item["id"]
+    for item in data
+]
+
+metadatas = []
+
+for item in data:
+
+    normalized_metadata = {}
+
+    for key, value in item["metadata"].items():
+
+        if isinstance(value, str):
+
+            normalized_metadata[key] = (
+                value.lower()
+            )
+
+        else:
+
+            normalized_metadata[key] = value
+
+    metadatas.append(
+        normalized_metadata
+    )
+
 embeddings = embedder.encode(
-    data['documents']
+    documents
 ).tolist()
 
 collection.add(
-    ids=data['ids'],
-    documents=data['documents'],
-    metadatas=data['metadata'],
+    ids=ids,
+    documents=documents,
+    metadatas=metadatas,
     embeddings=embeddings
 )
 

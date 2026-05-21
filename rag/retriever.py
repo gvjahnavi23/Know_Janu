@@ -9,17 +9,9 @@ class DenseRetriever:
 
         self.collection = send_collection()
 
-    def retrieve(
-        self,
-        query,
-        where_filter=None,
-        top_k=TOP_K_DENSE
-    ):
+    def retrieve(self,query,where_filter=None,top_k=TOP_K_DENSE):
 
-        query_embedding = (
-            embedder.encode(query)
-            .tolist()
-        )
+        query_embedding = embedder.encode(query).tolist()
 
         results = self.collection.query(
             query_embeddings=[query_embedding],
