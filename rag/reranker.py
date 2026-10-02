@@ -6,7 +6,7 @@ class Reranker:
 
     def __init__(self):
 
-        self.model = CrossEncoder(RERANKER_MODEL)
+        self.model = CrossEncoder(RERANKER_MODEL, local_files_only=True)
 
     def rerank(self,query,documents,top_k = TOP_K_RERANK):
         pairs = [
